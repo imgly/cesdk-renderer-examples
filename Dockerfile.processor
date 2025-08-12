@@ -1,0 +1,19 @@
+FROM imgly-processor-assetless
+
+USER ROOT
+ARG UBQ_BUILD_TYPE
+COPY _builds/cesdk/x86_64-ubuntu-linux/${UBQ_BUILD_TYPE}/assets /opt/imgly-processor/assets
+
+USER containeruser
+
+WORKDIR /opt/imgly-processor
+ENTRYPOINT [ "/opt/imgly-processor/imgly-processor" ]
+
+ARG UBQ_VERSION
+LABEL "org.opencontainers.image.title"="IMG.LY Processor"
+LABEL "org.opencontainers.image.description"="IMG.LY Processor is a Linux command-line tool for automatic image and video processing."
+LABEL "org.opencontainers.image.version"="${UBQ_VERSION}"
+LABEL "org.opencontainers.image.authors"="IMG.LY GmbH <contact@img.ly>"
+LABEL "org.opencontainers.image.vendor"="IMG.LY GmbH"
+LABEL "org.opencontainers.image.url"="https://img.ly"
+LABEL "org.opencontainers.image.documentation"="https://img.ly/docs/"

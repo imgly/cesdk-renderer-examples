@@ -1,0 +1,21 @@
+{
+  "name": "imgly-processor-express-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A demo showcasing how to use the IMG.LY Processor in an Express.js API",
+  "license": "ISC",
+  "author": "IMG.LY GmbH <contact@img.ly>",
+  "type": "module",
+  "main": "src/app.mjs",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "true",
+    "start": "node src/app.mjs"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.1"
+  }
+}

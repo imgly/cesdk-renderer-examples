@@ -1,0 +1,56 @@
+FROM imgly-processor-gpu-base
+
+RUN set -x && DEBIAN_FRONTEND=noninteractive apt-get update --yes \
+    && apt-get upgrade --yes \
+    && apt-get install --yes apt-transport-https software-properties-common gpg wget curl apt-utils ca-certificates \
+    && apt-get install --yes \
+        cpu-checker \
+        ffmpeg \
+        gdb \
+        gettext \
+        gh \
+        git \
+        gstreamer1.0-gl \
+        gstreamer1.0-libav \
+        gstreamer1.0-plugins-bad \
+        gstreamer1.0-plugins-base \
+        gstreamer1.0-plugins-good \
+        gstreamer1.0-plugins-ugly \
+        gstreamer1.0-tools \
+        iputils-ping \
+        jq \
+        libavcodec-extra \
+        libnss3 \
+        libvulkan1 \
+        libsdl2-2.0-0 \
+        libglfw3 \
+        libxss1 \
+        libxtst6 \
+        xvfb \
+        zip \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean -y
+
+RUN mkdir -p /opt/imgly-processor/
+
+COPY apps/cesdk_web/release/ThirdPartyLicenses.md /opt/imgly-processor/ThirdPartyLicenses.md
+COPY bindings/wasm/js_web/release/LICENSE.md /opt/imgly-processor/LICENSE
+ARG UBQ_BUILD_TYPE
+COPY _builds/cesdk/x86_64-ubuntu-linux/${UBQ_BUILD_TYPE}/cesdk_cli /opt/imgly-processor/imgly-processor
+
+RUN chmod 0755 /opt/imgly-processor/imgly-processor
+
+RUN useradd -ms /bin/bash containeruser
+USER containeruser
+
+WORKDIR /opt/imgly-processor
+ENTRYPOINT [ "/opt/imgly-processor/imgly-processor" ]
+
+ARG UBQ_VERSION
+LABEL "org.opencontainers.image.title"="IMG.LY Processor (no asset version)"
+LABEL "org.opencontainers.image.description"="IMG.LY Processor is a Linux command-line tool for automatic image and video processing."
+LABEL "org.opencontainers.image.version"="${UBQ_VERSION}"
+LABEL "org.opencontainers.image.authors"="IMG.LY GmbH <contact@img.ly>"
+LABEL "org.opencontainers.image.vendor"="IMG.LY GmbH"
+LABEL "org.opencontainers.image.url"="https://img.ly"
+LABEL "org.opencontainers.image.documentation"="https://img.ly/docs/"

@@ -1,0 +1,26 @@
+#!/bin/bash
+set -euo pipefail
+
+# Load the license from the .env file if it exists
+if [[ -f .env ]]; then
+  . .env
+fi
+
+# Set the IMGLY_PROCESSOR_VERSION to the latest version if not explicitly overridden
+IMGLY_PROCESSOR_VERSION=${IMGLY_PROCESSOR_VERSION:-latest}
+
+# Create the input and output directories if missing and set permissions
+mkdir -p input output
+chmod 0777 input output
+
+# Run the processor on one of the template scenes
+# Add `--gpus all` to Docker arguments after `--rm` to use GPU rendering if an NVIDIA GPU is available.
+docker run --rm -it \
+    -e "IMGLY_LICENSE=${IMGLY_LICENSE:?Missing IMGLY_LICENSE}" \
+    -v "$(pwd)/output:/output" \
+    "docker.io/imgly/imgly-processor:${IMGLY_PROCESSOR_VERSION}" \
+    --input "${INPUT_FILE:-/opt/imgly-processor/assets/demo/v2/ly.img.template/templates/cesdk_postcard_1.scene}" \
+    --dpi 300 \
+    --output "${OUTPUT_FILE:-/output/postcard.jpg}" \
+    --render-device auto \
+    --json-progress
