@@ -1,0 +1,23 @@
+{
+  "name": "imgly-processor-express-api-variants",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A demo showcasing how to use the Node.js SDK combined with the IMG.LY Processor in an Express.js API for server-side variant generation",
+  "license": "ISC",
+  "author": "IMG.LY GmbH <contact@img.ly>",
+  "type": "module",
+  "main": "src/app.mjs",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "true",
+    "start": "node src/app.mjs"
+  },
+  "dependencies": {
+    "@cesdk/node": "1.55.1",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "multer": "^2.0.1"
+  }
+}

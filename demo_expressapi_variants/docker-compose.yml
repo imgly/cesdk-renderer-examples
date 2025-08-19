@@ -1,0 +1,8 @@
+services:
+  app:
+    platform: linux/amd64
+    build: .
+    environment:
+      - IMGLY_LICENSE=${IMGLY_LICENSE}
+    ports:
+      - "8080:8080"
