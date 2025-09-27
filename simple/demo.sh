@@ -18,8 +18,8 @@ chmod 0777 input output
 docker run --rm -it \
     -e "IMGLY_LICENSE=${IMGLY_LICENSE:?Missing IMGLY_LICENSE}" \
     -v "$(pwd)/output:/output" \
-    "docker.io/imgly/imgly-processor:${IMGLY_PROCESSOR_VERSION}" \
-    --input "${INPUT_FILE:-/opt/imgly-processor/assets/demo/v2/ly.img.template/templates/cesdk_postcard_1.scene}" \
+    "docker.io/imgly/cesdk-processor:${IMGLY_PROCESSOR_VERSION}" \
+    --input "${INPUT_FILE:-/opt/cesdk-processor/assets/demo/v2/ly.img.template/templates/cesdk_postcard_1.scene}" \
     --dpi 300 \
     --output "${OUTPUT_FILE:-/output/postcard.jpg}" \
     --render-device auto \

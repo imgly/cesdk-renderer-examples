@@ -1,8 +1,8 @@
 {
-  "name": "imgly-processor-express-api",
+  "name": "cesdk-processor-express-api",
   "private": true,
   "version": "1.0.0",
-  "description": "A demo showcasing how to use the IMG.LY Processor in an Express.js API",
+  "description": "A demo showcasing how to use the CE.SDK Processor in an Express.js API",
   "license": "ISC",
   "author": "IMG.LY GmbH <contact@img.ly>",
   "type": "module",

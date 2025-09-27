@@ -1,4 +1,4 @@
-# Exporting a simple scene using the IMG.LY Processor docker container commandline interface
+# Exporting a simple scene using the CE.SDK Processor docker container commandline interface
 
 ## Running the sample
 
