@@ -1,8 +1,8 @@
 {
-  "name": "imgly-processor-express-api-variants",
+  "name": "cesdk-processor-express-api-variants",
   "private": true,
   "version": "1.0.0",
-  "description": "A demo showcasing how to use the Node.js SDK combined with the IMG.LY Processor in an Express.js API for server-side variant generation",
+  "description": "A demo showcasing how to use the Node.js SDK combined with the CE.SDK Processor in an Express.js API for server-side variant generation",
   "license": "ISC",
   "author": "IMG.LY GmbH <contact@img.ly>",
   "type": "module",

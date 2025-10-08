@@ -1,6 +1,6 @@
 # An Express.js API processing and exporting scene files on the server
 
-This demo combines the Node.js CreativeEditor SDK bindings with the IMG.LY Processor to modify a scene and then export it efficiently with GPU acceleration.
+This demo combines the Node.js CreativeEditor SDK bindings with the CE.SDK Processor to modify a scene and then export it efficiently with GPU acceleration.
 
 ## Running the sample
 

@@ -6,9 +6,9 @@ import fs from 'node:fs';
 import { promisify } from 'node:util';
 
 const processorPath =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/imgly-processor/imgly-processor';
+  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/cesdk-processor';
 const processorPwd =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/imgly-processor/';
+  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/';
 
 const execFileAsync = promisify(execFile);
 const app = express();
@@ -70,5 +70,5 @@ app.post('/export', upload.single('scene'), async (req, res) => {
 app.use(express.static('public'));
 
 app.listen(port, () => {
-  console.log(`IMG.LY Processor Express API demo listening on port ${port}`);
+  console.log(`CE.SDK Processor Express API demo listening on port ${port}`);
 });

@@ -13,9 +13,9 @@ const engineConfig = {
 };
 
 const processorPath =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/imgly-processor/imgly-processor';
+  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/cesdk-processor';
 const processorPwd =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/imgly-processor/';
+  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/';
 
 const pageSizesOfInterest = [
   'page-sizes-instagram-square',
@@ -166,6 +166,6 @@ app.use(express.static('public'));
 
 app.listen(port, () => {
   console.log(
-    `IMG.LY Processor Express variant generation API demo listening on port ${port}`
+    `CE.SDK Processor Express variant generation API demo listening on port ${port}`
   );
 });
