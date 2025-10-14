@@ -1,12 +1,12 @@
-# CE.SDK Processor Fal.AI Serverless App
+# CE.SDK Renderer Fal.AI Serverless App
 
 > **We do not recommend running on fal.ai due to the lack of video acceleration support on the provided GPUs**
 
-This example contains a private serverless app for [fal.ai](https://docs.fal.ai/private-serverless-apps) that provides both a UI and API for converting scene files and archives using the public `imgly/cesdk-processor` container image.
+This example contains a private serverless app for [fal.ai](https://docs.fal.ai/private-serverless-apps) that provides both a UI and API for converting scene files and archives using the public `imgly/cesdk-renderer` container image.
 
 ## Overview
 
-The app leverages the CE.SDK Processor container to handle CE.SDK scene files and convert them to various output formats (primarily MP4 video). It runs on GPU-enabled infrastructure for optimal performance.
+The app leverages the CE.SDK Renderer container to handle CE.SDK scene files and convert them to various output formats (primarily MP4 video). It runs on GPU-enabled infrastructure for optimal performance.
 
 ### Features
 
@@ -33,7 +33,7 @@ The app leverages the CE.SDK Processor container to handle CE.SDK scene files an
 Launch the serverless app in an ephemeral fashion:
 
 ```bash
-fal run --<YOUR_TEAM> processor_container.py::Processor
+fal run --<YOUR_TEAM> renderer_container.py::Renderer
 ```
 
 ### Production Deployment
@@ -45,7 +45,7 @@ Deploy to production with a persistent URL:
 fal secrets set IMGLY_LICENSE="your-license-key"
 
 # Deploy to production
-fal deploy --team <YOUR_TEAM> processor_container.py::Processor
+fal deploy --team <YOUR_TEAM> renderer_container.py::Renderer
 
 # You'll get a persistent URL like:
 # https://<app-id>-<team>.fal.run/
@@ -103,13 +103,13 @@ For image files (.jpg, .png, etc.):
 
 The app requires the following environment variable to be set in your fal.ai secrets:
 
-- `IMGLY_PROCESSOR_LICENSE`: Your CE.SDK Processor license key
+- `IMGLY_LICENSE`: Your CE.SDK Renderer license key
 
 ## Technical Details
 
 ### Container Configuration
 
-- **Base Image**: `imgly/cesdk-processor:1.57.0-nightly.20250722`
+- **Base Image**: `imgly/cesdk-renderer:1.57.0-nightly.20250722`
 - **Python Version**: 3.13 (installed alongside existing Python)
 - **GPU**: NVIDIA L40 with full NVENC support (required)
 - **Codecs**: OSS codecs with hardware-accelerated NVENC H.264 encoding
@@ -119,7 +119,7 @@ The app requires the following environment variable to be set in your fal.ai sec
 
 1. Download input file from provided URL
 2. Generate output filename with `_processed.mp4` suffix
-3. Execute cesdk-processor with GPU acceleration
+3. Execute cesdk-renderer with GPU acceleration
 4. Upload processed file to fal.ai storage
 5. Return file URL in response
 
@@ -129,7 +129,7 @@ The app automatically configures:
 
 - `UBQ_AV_CODECS=oss`: Forces open-source codec usage
 - `UBQ_AV_OVERRIDE_H264_ENCODER=nvh264enc`: Enables NVIDIA hardware encoding
-- `IMGLY_LICENSE`: Set from fal.ai secrets for processor licensing
+- `IMGLY_LICENSE`: Set from fal.ai secrets for renderer licensing
 
 ## Production Configuration
 

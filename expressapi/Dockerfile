@@ -1,4 +1,4 @@
-FROM docker.io/imgly/cesdk-processor:latest
+FROM docker.io/imgly/cesdk-renderer:latest
 
 USER root
 

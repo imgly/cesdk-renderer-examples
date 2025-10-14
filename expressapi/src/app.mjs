@@ -5,10 +5,10 @@ import { execFile } from 'node:child_process';
 import fs from 'node:fs';
 import { promisify } from 'node:util';
 
-const processorPath =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/cesdk-processor';
-const processorPwd =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/';
+const rendererPath =
+  process.env.CESDK_RENDERER_PATH || '/opt/cesdk-renderer/cesdk-renderer';
+const rendererPwd =
+  process.env.CESDK_RENDERER_PATH || '/opt/cesdk-renderer/';
 
 const execFileAsync = promisify(execFile);
 const app = express();
@@ -21,7 +21,7 @@ app.post('/export', upload.single('scene'), async (req, res) => {
   const outputPath = `/exports/${sceneFile.filename}.png`;
 
   const { error, stdout, stderr } = await execFileAsync(
-    processorPath,
+    rendererPath,
     [
       '--input',
       inputPath,
@@ -33,7 +33,7 @@ app.post('/export', upload.single('scene'), async (req, res) => {
       '--render-device',
       'auto'
     ],
-    { cwd: processorPwd }
+    { cwd: rendererPwd }
   );
 
   if (error) {
@@ -70,5 +70,5 @@ app.post('/export', upload.single('scene'), async (req, res) => {
 app.use(express.static('public'));
 
 app.listen(port, () => {
-  console.log(`CE.SDK Processor Express API demo listening on port ${port}`);
+  console.log(`CE.SDK Renderer Express API demo listening on port ${port}`);
 });
