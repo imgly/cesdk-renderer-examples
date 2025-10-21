@@ -12,10 +12,10 @@ const engineConfig = {
   license: process.env.IMGLY_LICENSE
 };
 
-const processorPath =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/cesdk-processor';
-const processorPwd =
-  process.env.IMGLY_PROCESSOR_PATH || '/opt/cesdk-processor/';
+const rendererPath =
+  process.env.CESDK_RENDERER_PATH || '/opt/cesdk-renderer/cesdk-renderer';
+const rendererPwd =
+  process.env.CESDK_RENDERER_PATH || '/opt/cesdk-renderer/';
 
 const pageSizesOfInterest = [
   'page-sizes-instagram-square',
@@ -97,7 +97,7 @@ app.post('/export', upload.single('scene'), async (req, res) => {
   await Promise.all(
     variants.map(async (variant) => {
       const { error, stdout, stderr } = await execFileAsync(
-        processorPath,
+        rendererPath,
         [
           '--input',
           variant.scene,
@@ -111,7 +111,7 @@ app.post('/export', upload.single('scene'), async (req, res) => {
           '--render-device',
           'auto'
         ],
-        { cwd: processorPwd }
+        { cwd: rendererPwd }
       );
 
       if (error) {
@@ -166,6 +166,6 @@ app.use(express.static('public'));
 
 app.listen(port, () => {
   console.log(
-    `CE.SDK Processor Express variant generation API demo listening on port ${port}`
+    `CE.SDK Renderer Express variant generation API demo listening on port ${port}`
   );
 });

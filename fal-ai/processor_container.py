@@ -11,12 +11,12 @@ from fal.toolkit import File, Image, Video, download_file
 from typing import Union
 
 
-# Define a custom container image for the cesdk-processor
-# This image is based on the nightly version of cesdk-processor
+# Define a custom container image for the cesdk-renderer
+# This image is based on the nightly version of cesdk-renderer
 # and includes Python 3.11 installed via the deadsnakes PPA.
 custom_image = ContainerImage.from_dockerfile_str(
     """
-    FROM imgly/cesdk-processor:1.57.0-nightly.20250722
+    FROM imgly/cesdk-renderer:1.57.0-nightly.20250722
 
     # Switch to root to install packages
     USER root
@@ -54,7 +54,7 @@ class FileOutput(BaseModel):
     processing_time_seconds: float
     gpu_used: bool
 
-class Processor(fal.App, image=custom_image, kind="container"):
+class Renderer(fal.App, image=custom_image, kind="container"):
     # L40 has full NVENC support for video encoding
     # While more expensive, it's required for proper hardware-accelerated video processing
     # Note: T4 has limited NVENC (max 2 concurrent streams), L40 has unlimited NVENC sessions
@@ -89,7 +89,7 @@ class Processor(fal.App, image=custom_image, kind="container"):
             # Get the license from fal secret and set it for the subprocess
             license_key = os.environ.get('IMGLY_LICENSE')
             if not license_key:
-                print("WARNING: IMGLY_LICENSE not found in environment - processor may fail. Please set it in Fal secrets.", flush=True)
+                print("WARNING: IMGLY_LICENSE not found in environment - renderer may fail. Please set it in Fal secrets.", flush=True)
 
             # Ensure library paths are set correctly for production
             lib_paths = [
@@ -127,9 +127,9 @@ class Processor(fal.App, image=custom_image, kind="container"):
             ]
             process_env['GST_PLUGIN_PATH'] = ':'.join(gst_paths)
 
-            # Run the cesdk-processor
-            processor_path = "/opt/cesdk-processor/cesdk-processor"
-            cmd = [processor_path, "--input", str(input_file), "--output", output_file]
+            # Run the cesdk-renderer
+            renderer_path = "/opt/cesdk-renderer/cesdk-renderer"
+            cmd = [renderer_path, "--input", str(input_file), "--output", output_file]
 
             start_time = time.time()
             result = subprocess.run(cmd, capture_output=True, text=True, env=process_env)
@@ -150,7 +150,7 @@ class Processor(fal.App, image=custom_image, kind="container"):
 
             if result.returncode != 0:
                 print(
-                    f"ERROR: cesdk-processor failed with exit code {result.returncode}",
+                    f"ERROR: cesdk-renderer failed with exit code {result.returncode}",
                     flush=True,
                 )
                 print(f"ERROR: Process stderr: {result.stderr}", flush=True)
