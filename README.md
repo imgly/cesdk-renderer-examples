@@ -1,10 +1,10 @@
 ![Hero image showing the configuration abilities of CE.SDK](https://img.ly/static/cesdk_release_header.png)
 
-# CreativeEditor SDK - CE.SDK Processor Native Linux Examples
+# CreativeEditor SDK - CE.SDK Renderer Native Linux Examples
 
-The CE.SDK Processor is an automated batch processing tool to export CreativeEditor SDK (**CE.SDK**) scenes on the server side.
+The CE.SDK Renderer is an automated batch processing tool to export CreativeEditor SDK (**CE.SDK**) scenes on the server side.
 
-Seamlessly integrate it into any app with just a few lines of code. The editor combines the best of layout, typography and photo editing. **CE.SDK** also facilitates both template creation and adaption workflows, also featuring constraints and text placeholders for database automations. CE.SDK Processor enables you to run this automation efficiently, keeping the client side
+Seamlessly integrate it into any app with just a few lines of code. The editor combines the best of layout, typography and photo editing. **CE.SDK** also facilitates both template creation and adaption workflows, also featuring constraints and text placeholders for database automations. CE.SDK Renderer enables you to run this automation efficiently, keeping the client side
 lightweight.
 
 Visit our [website](https://img.ly) for more tutorials on how to integrate and customize the editor for your specific use-case.
