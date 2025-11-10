@@ -1,8 +1,9 @@
-import subprocess
 import fal
+import json
 import os
-import time
+import subprocess
 import sys
+import time
 import traceback
 
 from fal.container import ContainerImage
@@ -13,10 +14,10 @@ from typing import Union
 
 # Define a custom container image for the cesdk-renderer
 # This image is based on the nightly version of cesdk-renderer
-# and includes Python 3.11 installed via the deadsnakes PPA.
+# and includes Python 3.13 installed via the deadsnakes PPA.
 custom_image = ContainerImage.from_dockerfile_str(
     """
-    FROM imgly/cesdk-renderer:1.57.0-nightly.20250722
+    FROM imgly/cesdk-renderer:1.64.0-nightly.20251106
 
     # Switch to root to install packages
     USER root
@@ -80,7 +81,6 @@ class Renderer(fal.App, image=custom_image, kind="container"):
             # Generate output file path
             from pathlib import Path
             input_path = Path(input_file)
-            output_file = str(input_path.parent / (input_path.stem + '_processed.mp4'))
 
             # Set additional environment variables for the subprocess
             # Create a clean environment copy
@@ -129,7 +129,7 @@ class Renderer(fal.App, image=custom_image, kind="container"):
 
             # Run the cesdk-renderer
             renderer_path = "/opt/cesdk-renderer/cesdk-renderer"
-            cmd = [renderer_path, "--input", str(input_file), "--output", output_file]
+            cmd = [renderer_path, "--input", str(input_file), "--json-progress"]
 
             start_time = time.time()
             result = subprocess.run(cmd, capture_output=True, text=True, env=process_env)
@@ -156,8 +156,21 @@ class Renderer(fal.App, image=custom_image, kind="container"):
                 print(f"ERROR: Process stderr: {result.stderr}", flush=True)
                 raise RuntimeError(f"Processing failed with exit code {result.returncode}. Check logs for details.")
 
+            output_file = ""
+            for log_line in result.stdout.splitlines():
+                log_line = log_line.strip()
+                if not log_line.startswith("{") and log_line.endswith("}"):
+                    continue
+                log_json = dict()
+                try:
+                    log_json = json.loads(log_line)
+                except json.decoder.JSONDecodeError:
+                    continue
+                if log_json.get("status") == "done":
+                    output_file = log_json.get("path")
+
             # Check if output file was created
-            if not os.path.exists(output_file):
+            if len(output_file) == 0 or not os.path.exists(output_file):
                 print(f"ERROR: Output file not created: {output_file}", flush=True)
                 raise FileNotFoundError(f"Output file not created: {output_file}")
 

@@ -68,8 +68,6 @@ async function processWithDocker(sceneData, outputName) {
     '-e',
     `IMGLY_LICENSE=${process.env.IMGLY_LICENSE}`,
     '-e',
-    'UBQ_AV_CODECS=oss',
-    '-e',
     'UBQ_AV_OVERRIDE_H264_ENCODER=nvh264enc',
     '-e',
     'UBQ_AV_OVERRIDE_H265_ENCODER=nvh265enc',
