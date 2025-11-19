@@ -96,7 +96,6 @@ async function sendToRenderer(sceneData, outputName, index, total) {
         env: {
           ...process.env, // Inherits all env vars from Dockerfile
           IMGLY_LICENSE: LICENSE, // Override with user's license
-          UBQ_AV_CODECS: 'oss',
           UBQ_AV_OVERRIDE_H264_ENCODER: 'nvh264enc',
           UBQ_AV_OVERRIDE_H265_ENCODER: 'nvh265enc',
           VERBOSE: '1' // Enable verbose output
