@@ -76,7 +76,7 @@ docker pull imgly/cesdk-renderer:1.61.0-nightly.20250925
 3. **Set your license key:**
 
 ```bash
-export IMGLY_LICENSE="your-api-key-from-trial"
+export CESDK_LICENSE="your-api-key-from-trial"
 ```
 
 4. **Run the demo:**
@@ -98,7 +98,7 @@ docker build -t cesdk-renderer-demo .
 2. **Set your license key:**
 
 ```bash
-export IMGLY_LICENSE="your-api-key-from-trial"
+export CESDK_LICENSE="your-api-key-from-trial"
 ```
 
 3. **Run the container:**
@@ -107,7 +107,7 @@ export IMGLY_LICENSE="your-api-key-from-trial"
 docker run --rm \
   --gpus all \
   -v "$(pwd)/outputs:/app/outputs" \
-  -e IMGLY_LICENSE="${IMGLY_LICENSE}" \
+  -e CESDK_LICENSE="${CESDK_LICENSE}" \
   cesdk-renderer-demo demo.zip
 ```
 

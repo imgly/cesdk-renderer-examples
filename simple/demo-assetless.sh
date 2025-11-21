@@ -18,7 +18,7 @@ chmod 0777 input output
 docker run --rm -it \
     -e "CESDK_LICENSE=${CESDK_LICENSE:-}" \
     -v "$(pwd)/output:/output" -v "$(pwd)/input:/input" \
-    "docker.io/imgly/cesdk-renderer:${CESDK_RENDERER_VERSION}" \
-    --input "${INPUT_FILE:-/opt/cesdk-renderer/assets/demo/v2/ly.img.template/templates/cesdk_postcard_1.scene}" \
+    "docker.io/imgly/cesdk-renderer-assetless:${CESDK_RENDERER_VERSION}" \
+    --input "${INPUT_FILE:?INPUT_FILE must be provided}" \
     --output "${OUTPUT_FILE:-/output/}"
     "$@"

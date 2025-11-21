@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Load the license from the .env file if it exists (optional)
+# Load the license from the .env file if it exists (required)
 if [[ -f .env ]]; then
   . .env
 fi
@@ -16,9 +16,9 @@ chmod 0777 input output
 # Run the renderer on one of the template scenes
 # Add `--gpus all` to Docker arguments after `--rm` to use GPU rendering if an NVIDIA GPU is available.
 docker run --rm -it \
-    -e "CESDK_LICENSE=${CESDK_LICENSE:-}" \
+    -e "CESDK_LICENSE=${CESDK_LICENSE:?CESDK_LICENSE must be provided to use licensed codecs}" \
     -v "$(pwd)/output:/output" -v "$(pwd)/input:/input" \
-    "docker.io/imgly/cesdk-renderer:${CESDK_RENDERER_VERSION}" \
-    --input "${INPUT_FILE:-/opt/cesdk-renderer/assets/demo/v2/ly.img.template/templates/cesdk_postcard_1.scene}" \
+    "container.img.ly/imgly/cesdk-renderer-avlicensed-assetless:${CESDK_RENDERER_VERSION}" \
+    --input "${INPUT_FILE:?INPUT_FILE must be provided}" \
     --output "${OUTPUT_FILE:-/output/}"
     "$@"

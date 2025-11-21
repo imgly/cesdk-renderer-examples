@@ -66,9 +66,7 @@ async function processWithDocker(sceneData, outputName) {
     '-v',
     `${OUTPUT_DIR}:/output:rw`,
     '-e',
-    `IMGLY_LICENSE=${process.env.IMGLY_LICENSE}`,
-    '-e',
-    'UBQ_AV_CODECS=oss',
+    `CESDK_LICENSE=${process.env.CESDK_LICENSE}`,
     '-e',
     'UBQ_AV_OVERRIDE_H264_ENCODER=nvh264enc',
     '-e',
@@ -79,8 +77,7 @@ async function processWithDocker(sceneData, outputName) {
     'all',
     DOCKER_IMAGE,
     `--input=/input/${outputName}.zip`,
-    `--output=/output/${outputName}.mp4`,
-    '--render-device=auto'
+    `--output=/output/${outputName}.mp4`
   ];
 
   await new Promise((resolve, reject) => {
@@ -128,7 +125,7 @@ async function processWithDocker(sceneData, outputName) {
 async function main() {
   // Initialize CE.SDK engine
   const engine = await CreativeEngine.init({
-    license: process.env.IMGLY_LICENSE
+    license: process.env.CESDK_LICENSE
   });
 
   const archiveUrl = `file://${INPUT_ARCHIVE}`;

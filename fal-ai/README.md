@@ -42,7 +42,7 @@ Deploy to production with a persistent URL:
 
 ```bash
 # Set your license key as a secret (one-time setup)
-fal secrets set IMGLY_LICENSE="your-license-key"
+fal secrets set CESDK_LICENSE="your-license-key"
 
 # Deploy to production
 fal deploy --team <YOUR_TEAM> renderer_container.py::Renderer
@@ -77,8 +77,7 @@ For video files (.mp4, .mov, etc.):
     "file_name": "processed_output.mp4",
     "file_size": 1234567
   },
-  "processing_time_seconds": 7.53,
-  "gpu_used": true
+  "processing_time_seconds": 7.53
 }
 ```
 
@@ -94,8 +93,7 @@ For image files (.jpg, .png, etc.):
     "width": 1920,
     "height": 1080
   },
-  "processing_time_seconds": 2.14,
-  "gpu_used": true
+  "processing_time_seconds": 2.14
 }
 ```
 
@@ -103,17 +101,16 @@ For image files (.jpg, .png, etc.):
 
 The app requires the following environment variable to be set in your fal.ai secrets:
 
-- `IMGLY_LICENSE`: Your CE.SDK Renderer license key
+- `CESDK_LICENSE`: Your CE.SDK Renderer license key
 
 ## Technical Details
 
 ### Container Configuration
 
-- **Base Image**: `imgly/cesdk-renderer:1.57.0-nightly.20250722`
+- **Base Image**: `imgly/cesdk-renderer`
 - **Python Version**: 3.13 (installed alongside existing Python)
 - **GPU**: NVIDIA L40 with full NVENC support (required)
-- **Codecs**: OSS codecs with hardware-accelerated NVENC H.264 encoding
-- **Encoding**: GPU-accelerated via `nvh264enc` (mandatory for production performance)
+- **Codecs**: Open-source codecs, can switch to licensed codecs by changing the base image (1 line change)
 
 ### File Processing Flow
 
@@ -127,9 +124,7 @@ The app requires the following environment variable to be set in your fal.ai sec
 
 The app automatically configures:
 
-- `UBQ_AV_CODECS=oss`: Forces open-source codec usage
-- `UBQ_AV_OVERRIDE_H264_ENCODER=nvh264enc`: Enables NVIDIA hardware encoding
-- `IMGLY_LICENSE`: Set from fal.ai secrets for renderer licensing
+- `CESDK_LICENSE`: Set from fal.ai secrets for renderer licensing
 
 ## Production Configuration
 

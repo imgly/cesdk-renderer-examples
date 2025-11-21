@@ -1,8 +1,9 @@
-import subprocess
-import fal
+import fal, fal.logging
+import json
 import os
-import time
+import subprocess
 import sys
+import time
 import traceback
 
 from fal.container import ContainerImage
@@ -13,10 +14,10 @@ from typing import Union
 
 # Define a custom container image for the cesdk-renderer
 # This image is based on the nightly version of cesdk-renderer
-# and includes Python 3.11 installed via the deadsnakes PPA.
+# and includes Python 3.13 installed via the deadsnakes PPA.
 custom_image = ContainerImage.from_dockerfile_str(
     """
-    FROM imgly/cesdk-renderer:1.57.0-nightly.20250722
+    FROM imgly/cesdk-renderer:1.64.0-preview
 
     # Switch to root to install packages
     USER root
@@ -35,24 +36,23 @@ custom_image = ContainerImage.from_dockerfile_str(
     """
 )
 
+logger = fal.logging.get_logger()
+
 class Input(BaseModel):
     file_url: str
-    force_cpu: bool = False  # Optional flag to force CPU encoding for testing
+    verbose_output: bool = False
 
 class ImageOutput(BaseModel):
     image: Image
     processing_time_seconds: float
-    gpu_used: bool
 
 class VideoOutput(BaseModel):
     video: Video
     processing_time_seconds: float
-    gpu_used: bool
 
 class FileOutput(BaseModel):
     file: File
     processing_time_seconds: float
-    gpu_used: bool
 
 class Renderer(fal.App, image=custom_image, kind="container"):
     # L40 has full NVENC support for video encoding
@@ -74,22 +74,23 @@ class Renderer(fal.App, image=custom_image, kind="container"):
 
             # Check if file exists
             if not os.path.exists(input_file):
-                print(f"ERROR: Downloaded file not found: {input_file}", flush=True)
+                logger.error(f"Downloaded file not found: {input_file}")
                 raise FileNotFoundError(f"Downloaded file not found: {input_file}")
 
             # Generate output file path
             from pathlib import Path
             input_path = Path(input_file)
-            output_file = str(input_path.parent / (input_path.stem + '_processed.mp4'))
 
             # Set additional environment variables for the subprocess
             # Create a clean environment copy
             process_env = os.environ.copy()
 
             # Get the license from fal secret and set it for the subprocess
-            license_key = os.environ.get('IMGLY_LICENSE')
+            license_key = os.environ.get("CESDK_LICENSE")
             if not license_key:
-                print("WARNING: IMGLY_LICENSE not found in environment - renderer may fail. Please set it in Fal secrets.", flush=True)
+                logger.warning(
+                    "CESDK_LICENSE not found in environment - renderer may fail. Please set it in Fal secrets."
+                )
 
             # Ensure library paths are set correctly for production
             lib_paths = [
@@ -101,64 +102,54 @@ class Renderer(fal.App, image=custom_image, kind="container"):
             existing_ld_path = process_env.get('LD_LIBRARY_PATH', '')
             process_env['LD_LIBRARY_PATH'] = ':'.join(lib_paths) + (':' + existing_ld_path if existing_ld_path else '')
 
-            # Force OSS codecs since commercial codec licensing is not set up in production yet
-            process_env['UBQ_AV_CODECS'] = 'oss'
-
-            # Try different encoder configurations based on what's actually available
-            if input.force_cpu:
-                process_env['UBQ_AV_OVERRIDE_H264_ENCODER'] = 'x264enc'
-            else:
-                # Try to force NVENC (may fail if not available)
-                process_env['UBQ_AV_OVERRIDE_H264_ENCODER'] = 'nvh264enc'
-
             # Add CUDA-specific paths for NVENC
             process_env['CUDA_HOME'] = '/usr/local/cuda'
             process_env['CUDA_PATH'] = '/usr/local/cuda'
 
             # Minimal debug logging
-            process_env['GST_DEBUG'] = '*:1'
-
-            # Ensure GStreamer plugin path includes NVIDIA plugins
-            gst_paths = [
-                '/usr/lib/x86_64-linux-gnu/gstreamer-1.0',
-                '/usr/local/lib/gstreamer-1.0',
-                '/usr/lib/gstreamer-1.0',
-                '/opt/nvidia/gstreamer-1.0'  # Add NVIDIA-specific path
-            ]
-            process_env['GST_PLUGIN_PATH'] = ':'.join(gst_paths)
+            process_env["GST_DEBUG"] = "*:1"
 
             # Run the cesdk-renderer
             renderer_path = "/opt/cesdk-renderer/cesdk-renderer"
-            cmd = [renderer_path, "--input", str(input_file), "--output", output_file]
+            cmd = [renderer_path, "--input", str(input_file), "--json-progress"]
+            if input.verbose_output:
+                cmd.append("--verbose")
 
             start_time = time.time()
             result = subprocess.run(cmd, capture_output=True, text=True, env=process_env)
             execution_time = time.time() - start_time
 
             # Log execution time
-            print(f"[TIMING] Processing took {execution_time:.2f} seconds", flush=True)
-
-            # Detect if GPU was used
-            gpu_used = False
-            if result.stderr:
-                stderr_lower = result.stderr.lower()
-                if "nvh264enc" in stderr_lower or "nvenc" in stderr_lower:
-                    gpu_used = True
-                    print("[GPU] Hardware encoding (NVENC) was used", flush=True)
-                elif "x264enc" in stderr_lower or "x264" in stderr_lower:
-                    print("[GPU] CPU encoding (x264) was used instead of GPU", flush=True)
+            logger.info(f"[TIMING] Processing took {execution_time:.2f} seconds")
 
             if result.returncode != 0:
-                print(
+                logger.error(
                     f"ERROR: cesdk-renderer failed with exit code {result.returncode}",
-                    flush=True,
                 )
-                print(f"ERROR: Process stderr: {result.stderr}", flush=True)
+                logger.error(f"ERROR: Process stdout: {result.stdout}")
+                logger.error(f"ERROR: Process stderr: {result.stderr}")
                 raise RuntimeError(f"Processing failed with exit code {result.returncode}. Check logs for details.")
 
+            if input.verbose_output:
+                logger.info(f"Process stdout: {result.stdout}")
+                logger.info(f"Process stderr: {result.stderr}")
+
+            output_file = ""
+            for log_line in result.stdout.splitlines():
+                log_line = log_line.strip()
+                if not log_line.startswith("{") and log_line.endswith("}"):
+                    continue
+                log_json = dict()
+                try:
+                    log_json = json.loads(log_line)
+                except json.decoder.JSONDecodeError:
+                    continue
+                if log_json.get("status") == "done":
+                    output_file = log_json.get("path")
+
             # Check if output file was created
-            if not os.path.exists(output_file):
-                print(f"ERROR: Output file not created: {output_file}", flush=True)
+            if len(output_file) == 0 or not os.path.exists(output_file):
+                logger.error(f"Output file not created: {output_file}")
                 raise FileNotFoundError(f"Output file not created: {output_file}")
 
             # Upload the output file with proper type for preview
@@ -177,7 +168,7 @@ class Renderer(fal.App, image=custom_image, kind="container"):
                 except Exception:
                     pass
 
-                return VideoOutput(video=video, processing_time_seconds=execution_time, gpu_used=gpu_used)
+                return VideoOutput(video=video, processing_time_seconds=execution_time)
 
             elif output_ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp']:
                 # Image output - use Image type for image preview
@@ -190,7 +181,7 @@ class Renderer(fal.App, image=custom_image, kind="container"):
                 except Exception:
                     pass
 
-                return ImageOutput(image=image, processing_time_seconds=execution_time, gpu_used=gpu_used)
+                return ImageOutput(image=image, processing_time_seconds=execution_time)
 
             else:
                 # Unknown type - use generic File
@@ -203,9 +194,9 @@ class Renderer(fal.App, image=custom_image, kind="container"):
                 except Exception:
                     pass
 
-                return FileOutput(file=file, processing_time_seconds=execution_time, gpu_used=gpu_used)
+                return FileOutput(file=file, processing_time_seconds=execution_time)
 
         except Exception as e:
-            print(f"ERROR: Processing failed: {str(e)}", flush=True)
-            print(f"ERROR: Traceback: {traceback.format_exc()}", flush=True)
+            logger.error(f"Processing failed: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             raise

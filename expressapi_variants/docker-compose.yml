@@ -3,6 +3,6 @@ services:
     platform: linux/amd64
     build: .
     environment:
-      - IMGLY_LICENSE=${IMGLY_LICENSE}
+      - CESDK_LICENSE=${CESDK_LICENSE}
     ports:
       - "8080:8080"

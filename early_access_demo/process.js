@@ -22,7 +22,7 @@ const INPUT_ARCHIVE = process.argv[2]
   ? path.resolve(process.argv[2])
   : path.join(__dirname, 'demo.zip');
 const OUTPUT_DIR = path.join(__dirname, 'outputs');
-const LICENSE = process.env.IMGLY_LICENSE;
+const LICENSE = process.env.CESDK_LICENSE;
 
 // Text variable variations - 5 different location-based sentences
 const variations = [
@@ -84,8 +84,6 @@ async function sendToRenderer(sceneData, outputName, index, total) {
         tempScenePath,
         '--output',
         outputPath,
-        '--render-device',
-        'auto',
         '--verbose' // Add verbose flag if supported'
       ],
       {
@@ -95,8 +93,7 @@ async function sendToRenderer(sceneData, outputName, index, total) {
         cwd: cesdkWorkDir, // Run from cesdk-renderer's expected directory
         env: {
           ...process.env, // Inherits all env vars from Dockerfile
-          IMGLY_LICENSE: LICENSE, // Override with user's license
-          UBQ_AV_CODECS: 'oss',
+          CESDK_LICENSE: LICENSE, // Override with user's license
           UBQ_AV_OVERRIDE_H264_ENCODER: 'nvh264enc',
           UBQ_AV_OVERRIDE_H265_ENCODER: 'nvh265enc',
           VERBOSE: '1' // Enable verbose output
@@ -177,9 +174,9 @@ async function main() {
 
   // Check license
   if (!LICENSE) {
-    console.error('✗ IMGLY_LICENSE environment variable not set');
+    console.error('✗ CESDK_LICENSE environment variable not set');
     console.log('\nPlease set your license:');
-    console.log('  export IMGLY_LICENSE="your-license-key"');
+    console.log('  export CESDK_LICENSE="your-license-key"');
     process.exit(1);
   }
 
