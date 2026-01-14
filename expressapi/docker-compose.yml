@@ -6,3 +6,5 @@ services:
       - CESDK_LICENSE=${CESDK_LICENSE}
     ports:
       - "8080:8080"
+    # GPU acceleration - remove if running on a system without NVIDIA GPU
+    runtime: nvidia
