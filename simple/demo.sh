@@ -14,11 +14,11 @@ mkdir -p input output
 chmod 0777 input output
 
 # Run the renderer on one of the template scenes
-# Add `--gpus all` to Docker arguments after `--rm` to use GPU rendering if an NVIDIA GPU is available.
-docker run --rm -it \
+# Remove `--runtime=nvidia --gpus all` if running on a system without NVIDIA GPU.
+docker run --rm --runtime=nvidia --gpus all -it \
     -e "CESDK_LICENSE=${CESDK_LICENSE:-}" \
     -v "$(pwd)/output:/output" -v "$(pwd)/input:/input" \
     "docker.io/imgly/cesdk-renderer:${CESDK_RENDERER_VERSION}" \
-    --input "${INPUT_FILE:-/opt/cesdk-renderer/assets/demo/v2/ly.img.template/templates/cesdk_postcard_1.scene}" \
+    --input "${INPUT_FILE:-/opt/cesdk-renderer/assets/demo/v3/ly.img.template/templates/cesdk_postcard_1.scene}" \
     --output "${OUTPUT_FILE:-/output/}"
     "$@"
