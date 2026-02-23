@@ -17,7 +17,7 @@ from typing import Union
 # and includes Python 3.13 installed via the deadsnakes PPA.
 custom_image = ContainerImage.from_dockerfile_str(
     """
-    FROM imgly/cesdk-renderer:1.64.0-preview
+    FROM imgly/cesdk-renderer:latest
 
     # Switch to root to install packages
     USER root
