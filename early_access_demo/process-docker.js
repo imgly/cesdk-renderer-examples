@@ -129,7 +129,6 @@ async function main() {
   });
 
   const archiveUrl = `file://${INPUT_ARCHIVE}`;
-  await engine.addDefaultAssetSources();
 
   // Process each variation
   for (const variation of variations) {

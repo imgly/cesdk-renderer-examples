@@ -35,7 +35,6 @@ app.post('/export', upload.single('scene'), async (req, res) => {
   // highlight-engine-init
   const engine = await CreativeEngine.init(engineConfig);
   try {
-    await engine.addDefaultAssetSources();
     const scene = await engine.scene.loadFromURL(`file://${inputPath}`);
     // highlight-engine-init
 
