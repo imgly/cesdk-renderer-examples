@@ -15,25 +15,35 @@ from typing import Union
 # Define a custom container image for the cesdk-renderer
 # This image is based on the nightly version of cesdk-renderer
 # and includes Python 3.13 installed via the deadsnakes PPA.
+dockerfile_str = """
+FROM imgly/cesdk-renderer:latest
+
+# Switch to root to install packages
+USER root
+
+# Add deadsnakes PPA and install Python 3.13
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.13 python3.13-venv python3.13-dev && \
+    ln -sf /usr/bin/python3.13 /usr/bin/python && \
+    python --version
+
+# Set environment to ensure libraries are found
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda-12/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/lib:${LD_LIBRARY_PATH}
+"""
+
 custom_image = ContainerImage.from_dockerfile_str(
-    """
-    FROM imgly/cesdk-renderer:latest
-
-    # Switch to root to install packages
-    USER root
-
-    # Add deadsnakes PPA and install Python 3.13
-    RUN apt-get update && \
-        apt-get install -y software-properties-common && \
-        add-apt-repository -y ppa:deadsnakes/ppa && \
-        apt-get update && \
-        apt-get install -y python3.13 python3.13-venv python3.13-dev && \
-        ln -sf /usr/bin/python3.13 /usr/bin/python && \
-        python --version
-
-    # Set environment to ensure libraries are found
-    ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda-12/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/lib:${LD_LIBRARY_PATH}
-    """
+    dockerfile_str,
+    registries=(
+        {}
+        if not "container.img.ly" in dockerfile_str
+        else {
+            # Authenticate with the IMG.LY container registry when accessing the avlicensed Renderer variant
+            "container.img.ly": {"username": "oauth", "password": "$CESDK_LICENSE"}
+        }
+    ),
 )
 
 logger = fal.logging.get_logger()
