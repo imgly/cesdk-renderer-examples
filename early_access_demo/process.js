@@ -204,8 +204,6 @@ async function main() {
   const archiveUrl = `file://${INPUT_ARCHIVE}`;
 
   try {
-    await engine.addDefaultAssetSources();
-
     for (let i = 0; i < variations.length; i++) {
       const variation = variations[i];
       try {
