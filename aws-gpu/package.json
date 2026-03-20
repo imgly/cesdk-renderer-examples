@@ -1,0 +1,20 @@
+{
+  "name": "cesdk-renderer-aws-gpu",
+  "private": true,
+  "version": "1.0.0",
+  "description": "CE.SDK Renderer with GPU-accelerated video encoding on AWS EC2 (NVIDIA NVENC)",
+  "license": "ISC",
+  "author": "IMG.LY GmbH <contact@img.ly>",
+  "type": "module",
+  "main": "src/app.mjs",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "true",
+    "start": "node src/app.mjs"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
