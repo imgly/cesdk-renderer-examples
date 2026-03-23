@@ -1,0 +1,23 @@
+services:
+  renderer-api:
+    platform: linux/amd64
+    build: .
+    restart: unless-stopped
+    environment:
+      - CESDK_LICENSE=${CESDK_LICENSE}
+      # Force NVENC hardware video encoding on the GPU.
+      # Without these overrides the default Fluendo software encoder is used,
+      # which is CPU-bound and negates GPU rendering gains.
+      - UBQ_AV_OVERRIDE_H264_ENCODER=fluhwvanvench264enc
+      - UBQ_AV_OVERRIDE_H265_ENCODER=nvh265enc
+      - GST_DEBUG=2
+    ports:
+      - "8080:8080"
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu, graphics, utility, display, video]
