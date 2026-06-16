@@ -59,7 +59,8 @@ if [ "${CESDK_REMOTE_SETUP:-}" = "1" ]; then
   echo "3. Checking NVIDIA Container Toolkit..."
   if ! docker info 2>/dev/null | grep -q "nvidia"; then
     echo "   NVIDIA runtime not found, installing toolkit..."
-    distribution=$(. /etc/os-release; echo "$ID$VERSION_ID")
+    # shellcheck disable=1091
+    distribution=$(. /etc/os-release; echo "${ID:-}${VERSION_ID:-}")
     curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
     curl -s -L "https://nvidia.github.io/libnvidia-container/${distribution}/libnvidia-container.list" | \
       sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
