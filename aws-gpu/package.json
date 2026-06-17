@@ -8,7 +8,7 @@
   "type": "module",
   "main": "src/app.mjs",
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "test": "true",
