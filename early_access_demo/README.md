@@ -53,7 +53,7 @@ Start your free trial at [img.ly/forms/free-trial](https://img.ly/forms/free-tri
 - Docker
 - NVIDIA GPU with Docker GPU support
 - CE.SDK trial or production license
-- Node.js 20+ (for host-based approach only)
+- Node.js 22+ (for host-based approach only)
 
 > **Note:** This demo is configured to work with the included `demo.zip` file, which contains text blocks with specific variable names (`bottom_text`). To use your own CE.SDK archive, you'll need to modify the `variations` array in the processing scripts to match your scene's variable names.
 
