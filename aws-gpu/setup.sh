@@ -8,7 +8,7 @@
 #   4. Build and start the renderer
 #
 # Recommended EC2 configuration:
-#   AMI           : Deep Learning Base AMI with Single CUDA (Ubuntu 22.04)
+#   AMI           : Deep Learning Base AMI with Single CUDA (Ubuntu 26.04)
 #   Instance type : g6.2xlarge (NVIDIA L4 24 GB, 8 vCPU, 32 GB RAM)
 #   Storage       : 50 GB gp3
 #   Region        : Any region with g6 availability (e.g. eu-central-1)
@@ -77,7 +77,7 @@ if [ "${CESDK_REMOTE_SETUP:-}" = "1" ]; then
   # ---- Verify GPU access from Docker ----
   echo ""
   echo "4. Testing GPU access from Docker..."
-  if docker run --rm --runtime=nvidia --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi &>/dev/null; then
+  if docker run --rm --runtime=nvidia --gpus all nvidia/cuda:13.3.0-base-ubuntu26.04 nvidia-smi &>/dev/null; then
     echo "   GPU accessible from Docker OK"
   else
     echo "   WARNING: Could not access GPU from Docker. Check NVIDIA Container Toolkit setup."
