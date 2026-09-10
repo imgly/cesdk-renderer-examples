@@ -8,7 +8,7 @@
 #   4. Build and start the renderer
 #
 # Recommended EC2 configuration:
-#   AMI           : Deep Learning Base AMI with Single CUDA (Ubuntu 26.04)
+#   AMI           : Deep Learning Base AMI with Single CUDA (Ubuntu 22.04)
 #   Instance type : g6.2xlarge (NVIDIA L4 24 GB, 8 vCPU, 32 GB RAM)
 #   Storage       : 50 GB gp3
 #   Region        : Any region with g6 availability (e.g. eu-central-1)
@@ -59,8 +59,7 @@ if [ "${CESDK_REMOTE_SETUP:-}" = "1" ]; then
   echo "3. Checking NVIDIA Container Toolkit..."
   if ! docker info 2>/dev/null | grep -q "nvidia"; then
     echo "   NVIDIA runtime not found, installing toolkit..."
-    # shellcheck disable=1091
-    distribution=$(. /etc/os-release; echo "${ID:-}${VERSION_ID:-}")
+    distribution=$(. /etc/os-release; echo "$ID$VERSION_ID")
     curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
     curl -s -L "https://nvidia.github.io/libnvidia-container/${distribution}/libnvidia-container.list" | \
       sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
@@ -77,7 +76,7 @@ if [ "${CESDK_REMOTE_SETUP:-}" = "1" ]; then
   # ---- Verify GPU access from Docker ----
   echo ""
   echo "4. Testing GPU access from Docker..."
-  if docker run --rm --runtime=nvidia --gpus all nvidia/cuda:13.3.0-base-ubuntu26.04 nvidia-smi &>/dev/null; then
+  if docker run --rm --runtime=nvidia --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi &>/dev/null; then
     echo "   GPU accessible from Docker OK"
   else
     echo "   WARNING: Could not access GPU from Docker. Check NVIDIA Container Toolkit setup."
