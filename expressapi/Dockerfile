@@ -2,7 +2,7 @@ FROM docker.io/imgly/cesdk-renderer:latest
 
 USER root
 
-ARG NODE_VERSION=20.19.4
+ARG NODE_VERSION=22.22.3
 RUN mkdir -p /opt/node
 WORKDIR /opt/node
 RUN curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz -o node.tar.xz \
