@@ -4,13 +4,15 @@ FROM imgly/cesdk-renderer:1.61.0-nightly.20251010
 USER root
 
 
-# Install Node.js 20
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+ARG NODE_VERSION=22.22.3
+RUN mkdir -p /opt/node \
+ && cd /opt/node \
+ && curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz -o node.tar.xz \
+ && tar -Jxf node.tar.xz --strip-components=1 \
+ && rm node.tar.xz \
+ && /opt/node/bin/node --version
+
+ENV PATH="/opt/node/bin:$PATH"
 
 # Ensure containeruser exists (it should from base image, but let's be safe)
 RUN id containeruser || useradd -m -u 1001 containeruser
