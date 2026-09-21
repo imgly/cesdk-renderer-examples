@@ -1,5 +1,6 @@
 {
   "name": "cesdk-renderer-early-access-demo",
+  "private": true,
   "version": "1.0.0",
   "description": "CE.SDK Renderer Early Access Demo - Batch Text Variable Replacement",
   "main": "process.js",
@@ -12,6 +13,6 @@
     "@cesdk/node": "^1.60.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   }
 }

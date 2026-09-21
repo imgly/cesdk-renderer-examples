@@ -20,7 +20,7 @@ This example deploys the **avlicensed** CE.SDK Renderer as a Docker-based Expres
 
 | Setting       | Value                                                     |
 | ------------- | --------------------------------------------------------- |
-| AMI           | Deep Learning Base AMI with Single CUDA (Ubuntu 22.04)    |
+| AMI           | Deep Learning Base AMI with Single CUDA (Ubuntu 26.04)    |
 | Instance type | **g6.2xlarge** (NVIDIA L4 24 GB, 8 vCPU, 32 GB RAM)      |
 | Storage       | 50 GB gp3                                                 |
 | Region        | Any region with g6 availability (e.g. `eu-central-1`)     |
