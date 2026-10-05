@@ -44,15 +44,15 @@ This demo showcases a simple but powerful use case: generating location-based va
 
 ## Quick Start
 
-### Get Your Trial License
+### Get a License
 
-Start your free trial at [img.ly/forms/free-trial](https://img.ly/forms/free-trial) and use the provided API key as your license.
+Request a license at [img.ly/forms/contact-sales/](https://img.ly/forms/contact-sales/) and use the key you receive as your license.
 
 ### Prerequisites
 
 - Docker
 - NVIDIA GPU with Docker GPU support
-- CE.SDK trial or production license
+- CE.SDK license
 - Node.js 22+ (for host-based approach only)
 
 > **Note:** This demo is configured to work with the included `demo.zip` file, which contains text blocks with specific variable names (`bottom_text`). To use your own CE.SDK archive, you'll need to modify the `variations` array in the processing scripts to match your scene's variable names.
@@ -76,7 +76,7 @@ docker pull imgly/cesdk-renderer:1.61.0-nightly.20250925
 3. **Set your license key:**
 
 ```bash
-export CESDK_LICENSE="your-api-key-from-trial"
+export CESDK_LICENSE="YOUR_CESDK_LICENSE_KEY"
 ```
 
 4. **Run the demo:**
@@ -98,7 +98,7 @@ docker build -t cesdk-renderer-demo .
 2. **Set your license key:**
 
 ```bash
-export CESDK_LICENSE="your-api-key-from-trial"
+export CESDK_LICENSE="YOUR_CESDK_LICENSE_KEY"
 ```
 
 3. **Run the container:**
@@ -149,7 +149,7 @@ This early access demo uses:
 - **Public Docker image** from DockerHub with open-source codecs for evaluation
 - **NVIDIA GPU requirement** for the demo (production version supports CPU fallback)
 - **Pre-release software** - performance improvements ongoing
-- **Trial license required** - get yours at [img.ly/forms/free-trial](https://img.ly/forms/free-trial)
+- **License required** - request one at [img.ly/forms/contact-sales/](https://img.ly/forms/contact-sales/)
 
 The production version will include our proprietary, patent-safe codec pipeline with superior performance and full legal compliance.
 
@@ -212,5 +212,5 @@ Contact IMG.LY for production licensing and deployment options.
 ## Support & Contact
 
 - **Documentation**: [docs.img.ly](https://docs.img.ly)
-- **Trial Sign-up**: [img.ly/forms/free-trial](https://img.ly/forms/free-trial)
+- **License requests**: [img.ly/forms/contact-sales/](https://img.ly/forms/contact-sales/)
 - **Enterprise Inquiries**: Contact IMG.LY support
