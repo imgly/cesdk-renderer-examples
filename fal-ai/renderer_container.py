@@ -39,21 +39,26 @@ custom_image = ContainerImage.from_dockerfile_str(
 
 logger = fal.logging.get_logger()
 
+
 class Input(BaseModel):
     file_url: str
     verbose_output: bool = False
+
 
 class ImageOutput(BaseModel):
     image: Image
     processing_time_seconds: float
 
+
 class VideoOutput(BaseModel):
     video: Video
     processing_time_seconds: float
 
+
 class FileOutput(BaseModel):
     file: File
     processing_time_seconds: float
+
 
 class Renderer(fal.App, image=custom_image, kind="container"):
     # L40 has full NVENC support for video encoding
@@ -64,7 +69,9 @@ class Renderer(fal.App, image=custom_image, kind="container"):
     # Production configuration
     min_replicas = 0  # Scale to zero when idle (cost optimization)
     max_replicas = 1  # Single instance only - no parallel processing
-    max_concurrency = 1  # Process one request at a time per instance. We recommend a higher number to fully utilize the GPU.
+    max_concurrency = (
+        1  # Process one request at a time per instance. We recommend a higher number to fully utilize the GPU.
+    )
     keep_warm = 0  # Set to 1 if you want to avoid cold starts (increases cost)
 
     @fal.endpoint("/")
@@ -80,6 +87,7 @@ class Renderer(fal.App, image=custom_image, kind="container"):
 
             # Generate output file path
             from pathlib import Path
+
             input_path = Path(input_file)
 
             # Set additional environment variables for the subprocess
